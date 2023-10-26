@@ -12,3 +12,4 @@ class ActivationCodes(models.Model):
     """A model of database for activation linkes that send by email."""
     username = models.CharField(max_length=100)
     code = models.CharField(max_length=100)
+    email = models.EmailField(blank=True)

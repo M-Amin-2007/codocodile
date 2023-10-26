@@ -238,49 +238,39 @@ def forgot_password(request):
         if new_pass != new_pass_repeat:
             context = {"message": "your repeat field isn't correct!"}
             return JsonResponse(context)
-        else:
-            this_user.set_password(new_pass)
-            this_user.save()
-            login(request, this_user)
-            return JsonResponse({"message": "old password succesfully changed"})
+        this_user.set_password(new_pass)
+        this_user.save()
+        login(request, this_user)
+        return JsonResponse({"message": "old password succesfully changed"})
     elif "username" in request.POST:
-        username = request.POST.get("username").lower().title()
+        username = request.POST.get("username")
         email = request.POST.get("email").lower()
         try:
             this_user = MyUser.objects.get(username=username)
         except MyUser.DoesNotExist:
             return JsonResponse({"message": "this username isn't exist !!"})
-        else:
-            if re.sub(r"\s\w+@", "@", this_user.email) == email:
-                code = random_str(random.randint(20,30))
-                prefix = "https://" if request.is_secure() else "http://"
-                body = f"""
-                please click link to activate your account:
-                {prefix}{request.get_host()}/user/forgot_password/?email={email}&code={code}&username={username}
-                this activating code is valid for {FORGOT_LINK_TIME} minutes
-                """
-                send_gmail(body, email, "Rategram ForgotPassword")
-                ActivationCodes.objects.create(email=email, date=now(), code=code, username=username,
-                                                      password="")
-                return JsonResponse({"message": "forgot password email sent !!"})
-            else:
-                return JsonResponse({"message": "this email isn't for this user !!"})
+        if re.sub(r"\s\w+@", "@", this_user.email) == email:
+            code = random_str(random.randint(20,30))
+            prefix = "https://" if request.is_secure() else "http://"
+            body = f"""
+            please click link to activate your account:
+            {prefix}{request.get_host()}/user/forgot_password/?username={usename}&code={code}&email={email}
+            this activating code is valid for {LINK_TIME} minutes
+            """
+            send_gmail(body, email, "Rategram ForgotPassword")
+            ActivationCodes.objects.create(code=code, username=username)
+            return JsonResponse({"message": "forgot password email sent !!"})
+        return JsonResponse({"message": "this email isn't for this user !!"})
     elif "code" in request.GET.keys():
         username = request.GET.get("username")
-        email = request.GET.get("email")
         code = request.GET.get("code")
+        
         try:
-            temp_code = ActivationCodes.objects.get(username=username, code=code, email=email)
+            ActivationCodes.objects.get(code=code)
         except ActivationCodes.DoesNotExist:
-            return JsonResponse({"message": "forgot password limk is not valid or expired !!"})
-        else:
-            time_difference = pytz.utc.localize(now()) - temp_code.date
-            if time_difference.seconds > FORGOT_LINK_TIME * 60:
-                return JsonResponse({"message": "forgot password code time is over !!"})
-            else:
-                this_user = MyUser.objects.get(username=username)
-                login(request, this_user)
-                context = {"change_password": True}
-                return JsonResponse({"message": "password succesfully changed !!"})
-        return redirect(reverse("web:home"))
+            return JsonResponse({"message": "forgot password link is not valid or expired !!"})
+        this_user = MyUser.objects.get(username=username)
+        login(request, this_user)
+        context = {"change_password": True}
+        return JsonResponse({"message": "load change password form."})
     return JsonResponse({"message": "form"})
