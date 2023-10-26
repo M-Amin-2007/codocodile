@@ -26,7 +26,6 @@ from users.models import *
 
 
 now = datetime.datetime.now
-LINK_TIME = 30
 
 
 #--------------------------------   Functions   --------------------------------
@@ -84,19 +83,17 @@ def signin(request):
     
     if request.user.is_authenticated and not request.user.is_superuser:
         return JsonResponse({"message": "user was logged in !!"})
-    else:
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        if not MyUser.objects.filter(username=username) or MyUser.objects.get(username=username).is_superuser:
-            return JsonResponse({"message": "this username isn't exist !!"})
-        else:
-            this_user = authenticate(username=username, password=password)
-            if this_user:
-                login(request, this_user)
-                return JsonResponse({"message": "user logged in !!"})
-            else:
-                context = {"message": "password is incorrect !!"}
-                return JsonResponse(context)
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    if not MyUser.objects.filter(username=username) or MyUser.objects.get(username=username).is_superuser:
+        return JsonResponse({"message": "this username isn't exist !!"})
+
+    this_user = authenticate(username=username, password=password)
+    if this_user:
+        login(request, this_user)
+        return JsonResponse({"message": "user logged in !!"})
+    context = {"message": "password is incorrect !!"}
+    return JsonResponse(context) 
 
 
 @csrf_exempt
@@ -255,7 +252,6 @@ def forgot_password(request):
             body = f"""
             please click link to activate your account:
             {prefix}{request.get_host()}/user/forgot_password/?username={usename}&code={code}&email={email}
-            this activating code is valid for {LINK_TIME} minutes
             """
             send_gmail(body, email, "Rategram ForgotPassword")
             ActivationCodes.objects.create(code=code, username=username)
