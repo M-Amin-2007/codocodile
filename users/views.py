@@ -12,6 +12,7 @@ import ssl
 import smtplib
 import string
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -25,7 +26,7 @@ from users.models import *
 
 
 now = datetime.datetime.now
-LINK_TIME = 2
+LINK_TIME = 30
 
 
 #--------------------------------   Functions   --------------------------------
@@ -35,7 +36,7 @@ def random_str(num):
     """ This function returns a random string """
     
     random_string = str()
-    accepted_char = string.ascii_letters + string.digits + "@#$!^"
+    accepted_char = string.ascii_letters + string.digits
     for _ in range(num):
         random_string += random.choice(accepted_char)
     return random_string
@@ -69,9 +70,10 @@ def user(request):
     """ This API returns user information """
     
     if request.user.is_authenticated and not request.user.is_superuser:
-        return JsonResponse({"username": request.user.username, \
-                             "email": request.user.email, \
-                             "score": request.user.score})
+        this_user = MyUser.objects.get(username=request.user.username)
+        return JsonResponse({"username": this_user.username,
+                             "email": this_user.email,
+                             "score": this_user.score})
     else:
         return JsonResponse({"message": "user not authenticated !!"})
 
@@ -105,24 +107,27 @@ def signup(request):
         return JsonResponse({"message": "user was logged in !!"}) 
     elif request.POST:
         username = request.POST["username"]
-        prefix = "https://" if request.is_secure() else "http://"
-        code = random_str(random.randint(20, 30))
-        body = f"""
-        {prefix}{request.get_host()}/user/register?username={username}&code={code}
-        """
-        send_gmail(body, request.POST["email"], "Rategram SignUp")
-        ActivationCodes.objects.create(username=username, code=code)
-        new_user = MyUser.objects.create_user(username=request.POST["username"], password=request.POST["password"],
+        if not MyUser.objects.filter(username=username):
+            prefix = "https://" if request.is_secure() else "http://"
+            code = random_str(random.randint(20, 30))
+            body = f"""
+            {prefix}{request.get_host()}/user/signup?username={username}&code={code}
+            """
+            send_gmail(body, request.POST["email"], "Rategram SignUp")
+            ActivationCodes.objects.create(username=username, code=code)
+            MyUser.objects.create_user(username=username, password=request.POST["password"],
                                         email=request.POST["email"])
-        return JsonResponse({"message":"email send"})
+            return JsonResponse({"message":"email send !!"})
+        return JsonResponse({"message":"username exists !!"})
     elif "code" in request.GET:
         username = request.GET["username"]
         code = request.GET["code"]
         activation_code = ActivationCodes.objects.filter(username=username, code=code)
+        print(activation_code)
         if activation_code:
             activation_code[0].delete()
-            this_user = User.objects.get(username=username)
-            this_user.active = True
+            this_user = MyUser.objects.get(username=username)
+            this_user.email_active = True
             this_user.save()
             login(request, this_user)
             return JsonResponse({"message": "account activated !!"})
@@ -137,7 +142,7 @@ def signup(request):
 @csrf_exempt
 def signout(request):
     """ This function signs out user """
-    if request.user.is_authenticated and not request.user.is_superuser
+    if request.user.is_authenticated and not request.user.is_superuser:
         logout(request)
         return JsonResponse({"message": "user succesfully signed out !!"})
     return JsonResponse({"message": "user not authenticated !!"})
@@ -170,11 +175,10 @@ def change_username(request):
         this_user = request.user
         if MyUser.objects.filter(username=new_username).exists():
             return JsonResponse({"message": "this username exists !!"})
-        else:
-            this_user.username = new_username
-            this_user.save()
-            login(request, this_user)
-            return JsonResponse({"message": "username succesfully changed !!"})
+        this_user.username = new_username
+        this_user.save()
+        login(request, this_user)
+        return JsonResponse({"message": "username succesfully changed !!"})
     else:
         return JsonResponse({"message": "user not authenticated !!"})
 
@@ -188,43 +192,37 @@ def change_email(request):
             if "code" in request.GET:
                 code = request.GET.get("code")
                 email = request.GET.get("email").lower()
-                code_temp = AccountActivatingCodes.objects.get(code=code)
+                code_temp = ActivationCodes.objects.get(code=code)
                 this_user = request.user
-                if not code_temp.user_name == this_user.username:
-                    return JsonResponse({"message": "invalid or expired activation link !!"})
-                else:
+                if code_temp.username == this_user.username:
                     this_user.email = email
                     this_user.save()
                     login(request, this_user)
-                    return JsonResponse({"message": "email succesfully chnaged !!"})
-            else:
-                raise JsonResponse({"message": "invalid activation link !!"})
-        else:
-            new_email = request.POST.get("new_email").lower()
-            this_user = request.user
-            if MyUser.objects.filter(username=new_email).exists():
-                return JsonResponse({"message": "this email was used before this !!"})
-            else:
-                code = random_str(random.randint(20, 30))
-                prefix = "https://" if request.is_secure() else "http://"
-                body = f"""
-                click on this link to change your email to this email:
-                {prefix}{request.get_host()}/account/change_email/?email={new_email}&code={code}
-                """
-                send_gmail(body, new_email, "Rategram ChangeEmail")
-                AccountActivatingCodes.objects.create(code=code, user_name=this_user.username, password="",
-                                                      date=now(), email=new_email)
-                return JsonResponse({"message": "an email sent to the user's email !!"})
-    else:
-        return JsonResponse({"message": "user not authenticated !!"})
+                    return JsonResponse({"message": "email succesfully chanaged !!"})
+                return JsonResponse({"message": "invalid or expired activation link !!"})
+            return JsonResponse({"message": "invalid activation link !!"})
+        new_email = request.POST.get("new_email").lower()
+        this_user = request.user
+        if MyUser.objects.filter(email=new_email).exists():
+            return JsonResponse({"message": "this email was used before this !!"})
+        code = random_str(random.randint(20, 30))
+        prefix = "https://" if request.is_secure() else "http://"
+        body = f"""
+        click on this link to change your email to this email:
+        {prefix}{request.get_host()}/user/change_email/?email={new_email}&code={code}
+        """
+        send_gmail(body, new_email, "Rategram ChangeEmail")
+        ActivationCodes.objects.create(code=code, username=this_user.username)
+        return JsonResponse({"message": "an email sent to the new email !!"})
+    return JsonResponse({"message": "user not authenticated !!"})
 
 
 @csrf_exempt
 def delete_account(request):
     """ This function deletes teh user's account """
-    
     if request.user.is_authenticated and not request.user.is_superuser:
-        request.user.delete()
+        mu = MyUser.objects.get(username=request.user.username)
+        mu.delete()
         return JsonResponse({"message": "account succesfully deleted !!"})
     return JsonResponse({"message": "user not authenticated !!"})
 
@@ -258,11 +256,11 @@ def forgot_password(request):
                 prefix = "https://" if request.is_secure() else "http://"
                 body = f"""
                 please click link to activate your account:
-                {prefix}{request.get_host()}/account/forgot_password/?email={email}&code={code}&username={username}
+                {prefix}{request.get_host()}/user/forgot_password/?email={email}&code={code}&username={username}
                 this activating code is valid for {FORGOT_LINK_TIME} minutes
                 """
                 send_gmail(body, email, "Rategram ForgotPassword")
-                AccountActivatingCodes.objects.create(email=email, date=now(), code=code, user_name=username,
+                ActivationCodes.objects.create(email=email, date=now(), code=code, username=username,
                                                       password="")
                 return JsonResponse({"message": "forgot password email sent !!"})
             else:
@@ -272,8 +270,8 @@ def forgot_password(request):
         email = request.GET.get("email")
         code = request.GET.get("code")
         try:
-            temp_code = AccountActivatingCodes.objects.get(user_name=username, code=code, email=email)
-        except AccountActivatingCodes.DoesNotExist:
+            temp_code = ActivationCodes.objects.get(username=username, code=code, email=email)
+        except ActivationCodes.DoesNotExist:
             return JsonResponse({"message": "forgot password limk is not valid or expired !!"})
         else:
             time_difference = pytz.utc.localize(now()) - temp_code.date
@@ -285,5 +283,4 @@ def forgot_password(request):
                 context = {"change_password": True}
                 return JsonResponse({"message": "password succesfully changed !!"})
         return redirect(reverse("web:home"))
-    else:
-        return render(request, "users/forgot_password.html")
+    return JsonResponse({"message": "form"})

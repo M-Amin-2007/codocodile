@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class MyUser(User):
     score = models.FloatField(default=3, validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
-    active = models.BooleanField(default=False)
+    email_active = models.BooleanField(default=False)
 
 
 class ActivationCodes(models.Model):
