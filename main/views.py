@@ -22,6 +22,6 @@ from django.http import JsonResponse
 
 #--------------------------------   APIs   --------------------------------
 
-
-
-
+def rate_post(request):
+    """..."""
+    pass
