@@ -106,13 +106,17 @@ def signup(request):
         return JsonResponse({"message": "user was logged in !!"}) 
     elif request.method == "POST":
         username = request.POST.get("username")
+        print("----------------------------------------")
+        print(request.POST)
+        print(username)
+        print("----------------------------------salam", request.POST.get("email"))
         if not MyUser.objects.filter(username=username):
             prefix = "https://" if request.is_secure() else "http://"
             code = random_str(random.randint(20, 30))
             body = f"""
             {prefix}{request.get_host()}/user/signup?username={username}&code={code}
             """
-            print(request.POST.get("email"))
+            print("-------***---------------------------salam", request.POST.get("email"))
             res = send_gmail(body, request.POST.get("email"), "Rategram SignUp")
             ActivationCodes.objects.create(username=username, code=code)
             MyUser.objects.create_user(username=username, password=request.POST.get("password"),
