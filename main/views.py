@@ -28,8 +28,9 @@ import json
 @csrf_exempt
 def create_post(request):
     """  This function create a post  """
-    caption  = request.POST.get("caption")
-    media_link  = request.POST.get("media_link")
+    post_data = json.loads(request.body.decode("utf-8"))
+    caption  = post_data.get("caption")
+    media_link  = post_data.get("media_link")
     user  = MyUser.objects.get(username=request.user.username)
     Post.objects.create(caption=caption, media_link=media_link, user=user)
     return JsonResponse({"message": "Post succesfully created"})
@@ -37,7 +38,8 @@ def create_post(request):
 @csrf_exempt
 def post_info(request):
     """ This function returns the post information """
-    post_range = json.loads(request.POST.get("post"))
+    post_data = json.loads(request.body.decode("utf-8"))
+    post_range = json.loads(post_data.get("post"))
     no_all = Post.objects.all().count()
     context_list = list()
     for id in range(no_all - post_range[1] + 1, no_all - post_range[0] + 2):
@@ -66,8 +68,9 @@ def post_info(request):
 @csrf_exempt
 def rate_post(request):
     """..."""
-    id = request.POST.get("id")
-    rate = request.POST.get("rate")
+    post_data = json.loads(request.body.decode("utf-8"))
+    id = post_data.get("id")
+    rate = post_data.get("rate")
     mu = MyUser.objects.get(username=request.user.username)
     try:
         post = Post.objects.get(id=id)
@@ -96,7 +99,8 @@ def rate_post(request):
 @csrf_exempt
 def del_post(request):
     """delete post"""
-    post_id = request.POST.get("post_id")
+    post_data = json.loads(request.body.decode("utf-8"))
+    post_id = post_data.get("post_id")
     post = Post.objects.get(id=post_id)
     user_posts = Post.objects.filter(user=post.user)
     post.user.score = (post.user.score * len(user_posts) - post.avg_rate) / (len(user_posts) - 1)
@@ -107,7 +111,8 @@ def del_post(request):
 @csrf_exempt
 def user_posts(request):
     """posts of spiecific user"""
-    username = request.POST.get("username")
+    post_data = json.loads(request.body.decode("utf-8"))
+    username = post_data.get("username")
     try:
         mu = MyUser.objects.get(username=username)
     except MyUser.DoesNotExist:

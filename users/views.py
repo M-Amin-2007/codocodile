@@ -95,33 +95,29 @@ def signin(request):
     if this_user is not None:
         login(request, this_user)
         return JsonResponse({"message": "user logged in !!"})
-    context = {"message": f"password is incorrect !! user:"}
+    context = {"message": f"password is incorrect !!"}
     return JsonResponse(context) 
 
 
 @csrf_exempt
 def signup(request):
     """ This function register a new user """
-    print(request.method)
     if request.user.is_authenticated and not request.user.is_superuser:
         return JsonResponse({"message": "user was logged in !!"}) 
     elif request.method == "POST":
-        username = request.POST.get("username")
-        print("----------------------------------------")
-        print(request.POST)
-        print(username)
-        print("----------------------------------salam", request.POST.get("email"))
+        post_data = json.loads(request.body.decode("utf-8"))
+        username = post_data.get("username")
         if not MyUser.objects.filter(username=username):
             prefix = "https://" if request.is_secure() else "http://"
             code = random_str(random.randint(20, 30))
             body = f"""
             {prefix}{request.get_host()}/user/signup?username={username}&code={code}
             """
-            print("-------***---------------------------salam", request.POST.get("email"))
-            res = send_gmail(body, request.POST.get("email"), "Rategram SignUp")
+            print("-------***---------------------------salam", post_data.get("email"))
+            res = send_gmail(body, post_data.get("email"), "Rategram SignUp")
             ActivationCodes.objects.create(username=username, code=code)
-            MyUser.objects.create_user(username=username, password=request.POST.get("password"),
-                                        email=request.POST.get("email"))
+            MyUser.objects.create_user(username=username, password=post_data.get("password"),
+                                        email=post_data.get("email"))
             return JsonResponse(res)
         return JsonResponse({"message":"username exists !!"})
     elif "code" in request.GET:
@@ -157,8 +153,9 @@ def signout(request):
 def change_password(request):
     """ This function changes the user's password. this function is diferent from forgot password """
     if request.user.is_authenticated and not request.user.is_superuser:
-        pass1 = request.POST.get("pass1")
-        new_pass = request.POST.get("pass2")
+        post_data = json.loads(request.body.decode("utf-8"))
+        pass1 = post_data.get("pass1")
+        new_pass = post_data.get("pass2")
         this_user = request.user
         if authenticate(username=this_user.username, password=pass1) == this_user:
             this_user.set_password(new_pass)
@@ -176,7 +173,7 @@ def change_username(request):
     """ This function changes the user's username """
     
     if request.user.is_authenticated and not request.user.is_superuser:
-        new_username = request.POST.get("new_username")
+        new_username = post_data.get("new_username")
         this_user = request.user
         if MyUser.objects.filter(username=new_username).exists():
             return JsonResponse({"message": "this username exists !!"})
@@ -206,7 +203,7 @@ def change_email(request):
                     return JsonResponse({"message": "email succesfully chanaged !!"})
                 return JsonResponse({"message": "invalid or expired activation link !!"})
             return JsonResponse({"message": "invalid activation link !!"})
-        new_email = request.POST.get("new_email").lower()
+        new_email = post_data.get("new_email").lower()
         this_user = request.user
         if MyUser.objects.filter(email=new_email).exists():
             return JsonResponse({"message": "this email was used before this !!"})
@@ -235,11 +232,11 @@ def delete_account(request):
 @csrf_exempt
 def forgot_password(request):
     """forgot pass word view"""
-    
-    if "pass1" in request.POST.keys():
+    post_data = json.loads(request.body.decode("utf-8"))
+    if "pass1" in post_data.keys():
         this_user = request.user
-        new_pass_repeat = request.POST.get("pass2")
-        new_pass = request.POST.get("pass1")
+        new_pass_repeat = post_data.get("pass2")
+        new_pass = post_data.get("pass1")
         if new_pass != new_pass_repeat:
             context = {"message": "your repeat field isn't correct!"}
             return JsonResponse(context)
@@ -247,9 +244,9 @@ def forgot_password(request):
         this_user.save()
         login(request, this_user)
         return JsonResponse({"message": "old password succesfully changed"})
-    elif "username" in request.POST:
-        username = request.POST.get("username")
-        email = request.POST.get("email").lower()
+    elif "username" in post_data:
+        username = post_data.get("username")
+        email = post_data.get("email").lower()
         try:
             this_user = MyUser.objects.get(username=username)
         except MyUser.DoesNotExist:
