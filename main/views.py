@@ -2,10 +2,10 @@
 
 
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.contrib.auth import login, authenticate, logout
+from django.shortcuts import render
 from users.models import MyUser
 from main.models import *
-import json
 
 
 
@@ -22,6 +22,13 @@ import json
     
 
 #--------------------------------   APIs   --------------------------------
+
+
+@csrf_exempt
+def home(request):
+    """  This function shows home  """
+    
+    return render(request, "index.html")
 
 
 @csrf_exempt
