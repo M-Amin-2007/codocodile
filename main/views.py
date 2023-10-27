@@ -46,7 +46,7 @@ def post_info(request):
         try:
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
-            break
+            continue
         mu = MyUser.objects.get(username=request.user.username)
         if post.user is mu:
             user_rate = post.avg_rate
@@ -88,3 +88,9 @@ def rate_post(request):
         post.nor += 1
         post.save()
     return JsonResponse({"post_id": id, "new_post_rate": post.avg_rate})
+
+@csrf_exempt
+def del_post(request):
+    post_id = request.POST.get("post_id")
+    Post.objects.get(id=post_id).delete()
+    return JsonResponse({"message": "post deleted"})     
