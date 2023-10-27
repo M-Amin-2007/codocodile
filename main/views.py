@@ -35,7 +35,6 @@ def create_post(request):
     Post.objects.create(caption=caption, media_link=media_link, user=user)
     return JsonResponse({"message": "Post succesfully created"})
 
-
 @csrf_exempt
 def post_info(request):
     """ This function returns the post information """
@@ -64,7 +63,6 @@ def post_info(request):
                 "user_rate": user_rate}
         context_list.append(context)
     return JsonResponse({"context": json.dumps(context_list), "length": len(context_list)})
-    
 
 @csrf_exempt
 def rate_post(request):
@@ -72,13 +70,17 @@ def rate_post(request):
     id = request.POST.get("id")
     rate = request.POST.get("rate")
     mu = MyUser.objects.get(username=request.user.username)
-    post = Post.objects.get(id=id)
+    try:
+        post = Post.objects.get(id=id)
+    except Post.DoesNotExist:
+        return JsonResponse({"message": "post doesn't exist"})
     rates = Rate.objects.filter(user=mu, post=post)
+    old_rate = post.avg_rate
+    if mu == post.user:
+        return JsonResponse({"message": "you can't rate yourself"})
     if rates:
         old_rate = rates[0].rate
-        print(old_rate, post.nor, post.avg_rate)
         post.avg_rate = (post.avg_rate * post.nor - float(old_rate) + float(rate)) / (post.nor)
-        print(post.avg_rate)
         post.save()
         rates[0].rate = rate
         rates[0].save()
@@ -87,16 +89,25 @@ def rate_post(request):
         post.avg_rate = (post.avg_rate * post.nor + float(rate)) / (post.nor + 1)
         post.nor += 1
         post.save()
+    no_posts = len(Post.objects.filter(user=post.user))
+    post.user.score = (post.user.score * no_posts - old_rate + post.avg_rate) / no_posts
+    post.user.save()
     return JsonResponse({"post_id": id, "new_post_rate": post.avg_rate})
 
 @csrf_exempt
 def del_post(request):
+    """delete post"""
     post_id = request.POST.get("post_id")
-    Post.objects.get(id=post_id).delete()
+    post = Post.objects.get(id=post_id)
+    user_posts = Post.objects.filter(user=post.user)
+    post.user.score = (post.user.score * len(user_posts) - post.avg_rate) / (len(user_posts) - 1)
+    post.user.save()
+    post.delete()
     return JsonResponse({"message": "post deleted"})     
 
 @csrf_exempt
 def user_posts(request):
+    """posts of spiecific user"""
     username = request.POST.get("username")
     try:
         mu = MyUser.objects.get(username=username)
