@@ -98,7 +98,7 @@ def signin(request):
 @csrf_exempt
 def signup(request):
     """ This function register a new user """
-
+    print(request.method)
     if request.user.is_authenticated and not request.user.is_superuser:
         return JsonResponse({"message": "user was logged in !!"}) 
     elif request.POST:

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-7ow&o^-pvy+9zutvb^62#131$__1x(0)4yp$a4ciu5t()xmxg3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["codocodile.darkube.app"]
+ALLOWED_HOSTS = ["codocodile.darkube.app", "127.0.0.1"]
 
 
 # Application definition
