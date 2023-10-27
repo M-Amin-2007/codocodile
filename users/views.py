@@ -56,7 +56,10 @@ def send_gmail(body, reciever, subject):
     ssl_context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=ssl_context) as server:
         server.login(sender, sender_password)
-        server.sendmail(sender, em["To"], em.as_string())
+        try:
+            server.sendmail(sender, em["To"], em.as_string())
+        except smtplib.SMTPRecipientsRefused:
+            return JsonResponse({"message": "invalid email"})
     return JsonResponse({"message": "OK"})
     
 
@@ -109,11 +112,11 @@ def signup(request):
             body = f"""
             {prefix}{request.get_host()}/user/signup?username={username}&code={code}
             """
-            send_gmail(body, request.POST.get("email"), "Rategram SignUp")
+            res = send_gmail(body, request.POST.get("email"), "Rategram SignUp")
             ActivationCodes.objects.create(username=username, code=code)
             MyUser.objects.create_user(username=username, password=request.POST.get("password"),
                                         email=request.POST.get("email"))
-            return JsonResponse({"message":"email send !!"})
+            return JsonResponse(res)
         return JsonResponse({"message":"username exists !!"})
     elif "code" in request.GET:
         username = request.GET.get("username")
