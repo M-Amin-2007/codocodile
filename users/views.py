@@ -88,7 +88,7 @@ def signin(request):
     username = request.POST.get("username")
     password = request.POST.get("password")
     if not MyUser.objects.filter(username=username) or MyUser.objects.get(username=username).is_superuser:
-        return JsonResponse({"message": "this username isn't exist !!"})
+        return JsonResponse({"message": f"this username does't exist !! username = {username}"})
 
     this_user = authenticate(username=username, password=password)
     if this_user:
