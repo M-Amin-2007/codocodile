@@ -102,7 +102,7 @@ def signup(request):
     if request.user.is_authenticated and not request.user.is_superuser:
         return JsonResponse({"message": "user was logged in !!"}) 
     elif request.method == "POST":
-        username = request.POST["username"]
+        username = request.POST.get("username")
         if not MyUser.objects.filter(username=username):
             prefix = "https://" if request.is_secure() else "http://"
             code = random_str(random.randint(20, 30))
