@@ -85,8 +85,9 @@ def signin(request):
     
     if request.user.is_authenticated and not request.user.is_superuser:
         return JsonResponse({"message": "user was logged in !!"})
-    username = request.POST.get("username")
-    password = request.POST.get("password")
+    post_data = json.loads(request.body.decode("utf-8"))
+    username = post_data.get("username")
+    password = post_data.POST.get("password")
     if not MyUser.objects.filter(username=username) or MyUser.objects.get(username=username).is_superuser:
         return JsonResponse({"message": f"this username does't exist !! username = {request.POST}"})
 

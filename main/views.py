@@ -2,7 +2,6 @@
 
 
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
 from users.models import MyUser
 from main.models import *
