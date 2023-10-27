@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Email</title>
-    <link rel="icon" type="image/x-icon" href="./logo&logotype.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo&logotype.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -23,6 +24,23 @@
 
 <body class="home-body">
     <style>
+        body {
+            height: 100%;
+            margin: 0;
+            scroll-behavior: smooth;
+            background: url("{% static './img/body-background.png' %}") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+
+        .home-body {
+            background: url("{% static './img/body-home-background.png' %}") no-repeat center center fixed;
+            display: grid;
+            grid-template-columns: 1fr 4fr;
+        }
+
         /* width */
         ::-webkit-scrollbar {
             width: 5px;
@@ -47,19 +65,19 @@
     <nav class="home-sidebar mx-auto content-center">
         <div style="margin-bottom: 20px;"><img src="logo&logotype.svg" alt=""></div>
         <div class="center">
-            <a href="#" class="d-flex nav-button my-1 mx-auto">
+            <a href="{% url 'main:home' %}" class="d-flex nav-button my-1 mx-auto">
                 <i class="fa fa-home fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Home</p>
             </a>
         </div>
         <div class="center">
-            <a href="#" class="nav-button my-1 mx-auto">
+            <a href="{% url 'main:create_post' %}" class="nav-button my-1 mx-auto">
                 <i class="fa fa-plus-circle fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Create</p>
             </a>
         </div>
         <div class="center">
-            <a href="#" class="nav-button my-1 mx-auto hoverable">
+            <a href="{% url 'users:user' %}" class="nav-button my-1 mx-auto hoverable">
                 <i class="fa fa-user-circle fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Profile</p>
             </a>
@@ -71,14 +89,14 @@
                 <div class="col-sm"></div>
                 <div class="col-sm text-align">
                     <div class="login">
-                            <form action="" method="post" class="needs-validation" id="theForm">
+                            <form action="{% url 'users:change_email' %}" method="post" class="needs-validation" id="theForm">
                                 <h1>Change Email</h1>
                                 <br>
                                 <div class="form-floating mb-3">
                                     <input type="email" class="form-control shadow" style="background-color: white;" id="floatingEmail" required>
                                     <label for="floatingEmail">New Email</label>
                                 </div>
-                                <button onclick="validateForm()" type="submit" class="btn btn-primary fs-5">Change Email</button>
+                                <button type="submit" class="btn btn-primary fs-5">Change Email</button>
                             </form>
                     </div>
                 </div>

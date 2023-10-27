@@ -20,25 +20,6 @@ main {
   overflow-x: hidden;
 }
 
-
-body {
-
-  height: 100%;
-  margin: 0;
-  scroll-behavior: smooth;
-  background: url(body-background.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-}
-
-.home-body {
-  background: url(body-home-background.png) no-repeat center center fixed;
-  display: grid;
-  grid-template-columns: 1fr 4fr;
-}
-
 .home-sidebar {
   margin: 25px;
 

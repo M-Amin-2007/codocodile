@@ -14,7 +14,7 @@ import string
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from email.message import EmailMessage
 from codocodile.settings import BASE_DIR
@@ -82,20 +82,21 @@ def user(request):
 @csrf_exempt
 def signin(request):
     """ This function signs in tje user """
-    
-    if request.user.is_authenticated and not request.user.is_superuser:
-        return JsonResponse({"message": "user was logged in !!"})
-    username = request.POST.get("username")
-    password = request.POST.get("password")
-    if not MyUser.objects.filter(username=username) or MyUser.objects.get(username=username).is_superuser:
-        return JsonResponse({"message": f"this username does't exist !! username = {request.POST}"})
+    if request.method == "POST" :
+        if request.user.is_authenticated and not request.user.is_superuser:
+            return JsonResponse({"message": "user was logged in !!"})
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        if not MyUser.objects.filter(username=username) or MyUser.objects.get(username=username).is_superuser:
+            return JsonResponse({"message": f"this username does't exist !! username = {request.POST}"})
 
-    this_user = authenticate(username=username, password=password)
-    if this_user:
-        login(request, this_user)
-        return JsonResponse({"message": "user logged in !!"})
-    context = {"message": "password is incorrect !!"}
-    return JsonResponse(context) 
+        this_user = authenticate(username=username, password=password)
+        if this_user:
+            login(request, this_user)
+            return JsonResponse({"message": "user logged in !!"})
+        context = {"message": "password is incorrect !!"}
+        return redirect("user")
+    return render(request, "sign-in.html")
 
 
 @csrf_exempt

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <link rel="icon" type="image/x-icon" href="./logo&logotype.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo&logotype.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap" rel="stylesheet">
@@ -20,29 +21,26 @@
 <body>
     <main class="login-main">
         <div class="login">
-            <div style="margin: 40px; margin-bottom: 15px;"><a href="#"><img src="logo&logotype.svg" alt=""></a></div>
+            <div style="margin: 40px; margin-bottom: 15px;"><a href="{% url 'main:home' %}"><img src="logo&logotype.svg" alt=""></a></div>
             <div class="login-box shadow">
-                <form action="{% url "users:signup" %}" method="post" class="needs-validation mb-3" id="theForm">
+                <form action="{% url 'users:signup' %}" method="post" class="needs-validation mb-3" id="theForm">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control shadow" id="floatingInput" required>
+                        <input type="text" class="form-control shadow" id="floatingInput" name="name" required>
                         <label for="floatingInput">Name</label>
-                        <div class="invalid-feedback">
-                            This field cannot be empty
-                        </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control shadow" id="floatingInput" required>
+                        <input type="text" class="form-control shadow" id="floatingInput" name="username" required>
                         <label for="floatingInput">Username</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control shadow" id="floatingInput" required>
+                        <input type="email" class="form-control shadow" id="floatingInput" name="email" required>
                         <label for="floatingInput">Email</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control shadow" id="floatingPassword" required>
+                        <input type="password" class="form-control shadow" id="floatingPassword" name="password" required>
                         <label for="floatingPassword">Password</label>
                     </div>
-                    <button onclick="validateForm()" type="submit" class="btn btn-primary shadow">Sign Up</button>
+                    <button type="submit" class="btn btn-primary shadow">Sign Up</button>
                 </form>
                 <a type="button" class="btn btn-danger shadow">
                     Forgot Password

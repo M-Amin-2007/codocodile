@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="icon" type="image/x-icon" href="./logo&logotype.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo&logotype.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -23,6 +24,23 @@
 
 <body class="home-body">
     <style>
+        body {
+            height: 100%;
+            margin: 0;
+            scroll-behavior: smooth;
+            background: url("{% static 'img/body-background.png' %}") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+
+        .home-body {
+            background: url("{% static './img/body-home-background.png' %}") no-repeat center center fixed;
+            display: grid;
+            grid-template-columns: 1fr 4fr;
+        }
+
         /* width */
         ::-webkit-scrollbar {
             width: 5px;
@@ -47,30 +65,40 @@
     <nav class="home-sidebar mx-auto content-center">
         <div style="margin-bottom: 20px;"><img src="logo&logotype.svg" alt=""></div>
         <div class="center">
-            <a href="#" class="d-flex nav-button my-1 mx-auto">
+            <a href="{% url 'main:home' %}" class="d-flex nav-button my-1 mx-auto">
                 <i class="fa fa-home fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Home</p>
             </a>
         </div>
         <div class="center">
-            <a href="#" class="nav-button my-1 mx-auto">
+            <a href="{% url 'main:create_post' %}" class="nav-button my-1 mx-auto">
                 <i class="fa fa-plus-circle fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Create</p>
             </a>
         </div>
-        <div class="center">
-            <a href="#" class="nav-button my-1 mx-auto hoverable">
-                <i class="fa fa-user-circle fa-lg my-auto ml-auto p-2"></i>
-                <p class="my-auto mr-auto p-1">Profile</p>
-            </a>
-        </div>
+        {% if user.is_authenticated %}
+            <div class="center">
+                <a href="{% url 'users:user' %}" class="nav-button my-1 mx-auto hoverable">
+                    <i class="fa fa-user-circle fa-lg my-auto ml-auto p-2"></i>
+                    <p class="my-auto mr-auto p-1">Profile</p>
+                </a>
+            </div>
+        {% else %}
+            <div class="center">
+                <a href="{% url 'users:signin' %}" class="nav-button my-1 mx-auto hoverable">
+                    <i class="fa fa-user-circle fa-lg my-auto ml-auto p-2"></i>
+                    <p class="my-auto mr-auto p-1">Profile</p>
+                </a>
+            </div>
+        {% endif %}
     </nav>
     <main class="main">
         <div class="mx-5 my-5">
             <div class="row">
                 <div class="col-sm">
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>
@@ -98,7 +126,8 @@
                         </div>
                     </div>
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>
@@ -126,7 +155,8 @@
                         </div>
                     </div>
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>
@@ -154,93 +184,8 @@
                         </div>
                     </div>
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
-                        <p class="author font-weight-bold mx-2 my-1">Author <span
-                                class="badge rounded-pill bg-warning">3.2</span></p>
-                        <hr>
-                        <div class="card-body mx-0 text-center">
-                            <h5 class="card-title my-3">Caption</h5>
-                            <hr>
-                            <div class="d-flex justify-content-center">
-                                <div class="rate d-inline">
-                                    <input type="radio" id="star5" name="rate" value="5" />
-                                    <label for="star5" title="text">5 stars</label>
-                                    <input type="radio" id="star4" name="rate" value="4" />
-                                    <label for="star4" title="text">4 stars</label>
-                                    <input type="radio" id="star3" name="rate" value="3" />
-                                    <label for="star3" title="text">3 stars</label>
-                                    <input type="radio" id="star2" name="rate" value="2" />
-                                    <label for="star2" title="text">2 stars</label>
-                                    <input type="radio" id="star1" name="rate" value="1" />
-                                    <label for="star1" title="text">1 star</label>
-                                </div>
-                                <div class="avg-rate d-inline">
-                                    <!-- <p class="fs-5">3.5<span style="font-size: 15px; margin-left: 2px;">35</span></p> -->
-                                    <p class="fs-5">3.5</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm">
-                    <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./corocodile.jpeg" alt="Card image cap">
-                        <p class="author font-weight-bold mx-2 my-1">Author <span
-                                class="badge rounded-pill bg-warning">3.2</span></p>
-                        <hr>
-                        <div class="card-body mx-0 text-center">
-                            <h5 class="card-title my-3">Caption</h5>
-                            <hr>
-                            <div class="d-flex justify-content-center">
-                                <div class="rate d-inline">
-                                    <input type="radio" id="star5" name="rate" value="5" />
-                                    <label for="star5" title="text">5 stars</label>
-                                    <input type="radio" id="star4" name="rate" value="4" />
-                                    <label for="star4" title="text">4 stars</label>
-                                    <input type="radio" id="star3" name="rate" value="3" />
-                                    <label for="star3" title="text">3 stars</label>
-                                    <input type="radio" id="star2" name="rate" value="2" />
-                                    <label for="star2" title="text">2 stars</label>
-                                    <input type="radio" id="star1" name="rate" value="1" />
-                                    <label for="star1" title="text">1 star</label>
-                                </div>
-                                <div class="avg-rate d-inline">
-                                    <!-- <p class="fs-5">3.5<span style="font-size: 15px; margin-left: 2px;">35</span></p> -->
-                                    <p class="fs-5">3.5</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./corocodile.jpeg" alt="Card image cap">
-                        <p class="author font-weight-bold mx-2 my-1">Author <span
-                                class="badge rounded-pill bg-warning">3.2</span></p>
-                        <hr>
-                        <div class="card-body mx-0 text-center">
-                            <h5 class="card-title my-3">Caption</h5>
-                            <hr>
-                            <div class="d-flex justify-content-center">
-                                <div class="rate d-inline">
-                                    <input type="radio" id="star5" name="rate" value="5" />
-                                    <label for="star5" title="text">5 stars</label>
-                                    <input type="radio" id="star4" name="rate" value="4" />
-                                    <label for="star4" title="text">4 stars</label>
-                                    <input type="radio" id="star3" name="rate" value="3" />
-                                    <label for="star3" title="text">3 stars</label>
-                                    <input type="radio" id="star2" name="rate" value="2" />
-                                    <label for="star2" title="text">2 stars</label>
-                                    <input type="radio" id="star1" name="rate" value="1" />
-                                    <label for="star1" title="text">1 star</label>
-                                </div>
-                                <div class="avg-rate d-inline">
-                                    <!-- <p class="fs-5">3.5<span style="font-size: 15px; margin-left: 2px;">35</span></p> -->
-                                    <p class="fs-5">3.5</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./corocodile.jpeg" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>
@@ -270,7 +215,7 @@
                 </div>
                 <div class="col-sm">
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/corocodile.jpeg' %}" alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>
@@ -298,7 +243,7 @@
                         </div>
                     </div>
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/corocodile.jpeg' %}" alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>
@@ -326,7 +271,38 @@
                         </div>
                     </div>
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/corocodile.jpeg' %}" alt="Card image cap">
+                        <p class="author font-weight-bold mx-2 my-1">Author <span
+                                class="badge rounded-pill bg-warning">3.2</span></p>
+                        <hr>
+                        <div class="card-body mx-0 text-center">
+                            <h5 class="card-title my-3">Caption</h5>
+                            <hr>
+                            <div class="d-flex justify-content-center">
+                                <div class="rate d-inline">
+                                    <input type="radio" id="star5" name="rate" value="5" />
+                                    <label for="star5" title="text">5 stars</label>
+                                    <input type="radio" id="star4" name="rate" value="4" />
+                                    <label for="star4" title="text">4 stars</label>
+                                    <input type="radio" id="star3" name="rate" value="3" />
+                                    <label for="star3" title="text">3 stars</label>
+                                    <input type="radio" id="star2" name="rate" value="2" />
+                                    <label for="star2" title="text">2 stars</label>
+                                    <input type="radio" id="star1" name="rate" value="1" />
+                                    <label for="star1" title="text">1 star</label>
+                                </div>
+                                <div class="avg-rate d-inline">
+                                    <!-- <p class="fs-5">3.5<span style="font-size: 15px; margin-left: 2px;">35</span></p> -->
+                                    <p class="fs-5">3.5</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card mb-4 shadow" style="width: 100%;">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>
@@ -354,7 +330,66 @@
                         </div>
                     </div>
                     <div class="card mb-4 shadow" style="width: 100%;">
-                        <img class="card-img-top" src="./body-home-background.png" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
+                        <p class="author font-weight-bold mx-2 my-1">Author <span
+                                class="badge rounded-pill bg-warning">3.2</span></p>
+                        <hr>
+                        <div class="card-body mx-0 text-center">
+                            <h5 class="card-title my-3">Caption</h5>
+                            <hr>
+                            <div class="d-flex justify-content-center">
+                                <div class="rate d-inline">
+                                    <input type="radio" id="star5" name="rate" value="5" />
+                                    <label for="star5" title="text">5 stars</label>
+                                    <input type="radio" id="star4" name="rate" value="4" />
+                                    <label for="star4" title="text">4 stars</label>
+                                    <input type="radio" id="star3" name="rate" value="3" />
+                                    <label for="star3" title="text">3 stars</label>
+                                    <input type="radio" id="star2" name="rate" value="2" />
+                                    <label for="star2" title="text">2 stars</label>
+                                    <input type="radio" id="star1" name="rate" value="1" />
+                                    <label for="star1" title="text">1 star</label>
+                                </div>
+                                <div class="avg-rate d-inline">
+                                    <!-- <p class="fs-5">3.5<span style="font-size: 15px; margin-left: 2px;">35</span></p> -->
+                                    <p class="fs-5">3.5</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-4 shadow" style="width: 100%;">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
+                        <p class="author font-weight-bold mx-2 my-1">Author <span
+                                class="badge rounded-pill bg-warning">3.2</span></p>
+                        <hr>
+                        <div class="card-body mx-0 text-center">
+                            <h5 class="card-title my-3">Caption</h5>
+                            <hr>
+                            <div class="d-flex justify-content-center">
+                                <div class="rate d-inline">
+                                    <input type="radio" id="star5" name="rate" value="5" />
+                                    <label for="star5" title="text">5 stars</label>
+                                    <input type="radio" id="star4" name="rate" value="4" />
+                                    <label for="star4" title="text">4 stars</label>
+                                    <input type="radio" id="star3" name="rate" value="3" />
+                                    <label for="star3" title="text">3 stars</label>
+                                    <input type="radio" id="star2" name="rate" value="2" />
+                                    <label for="star2" title="text">2 stars</label>
+                                    <input type="radio" id="star1" name="rate" value="1" />
+                                    <label for="star1" title="text">1 star</label>
+                                </div>
+                                <div class="avg-rate d-inline">
+                                    <!-- <p class="fs-5">3.5<span style="font-size: 15px; margin-left: 2px;">35</span></p> -->
+                                    <p class="fs-5">3.5</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-4 shadow" style="width: 100%;">
+                        <img class="card-img-top" src="{% static 'img/body-home-background.png' %}"
+                            alt="Card image cap">
                         <p class="author font-weight-bold mx-2 my-1">Author <span
                                 class="badge rounded-pill bg-warning">3.2</span></p>
                         <hr>

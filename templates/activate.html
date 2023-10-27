@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activate Email</title>
-    <link rel="icon" type="image/x-icon" href="./logo&logotype.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo&logotype.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap" rel="stylesheet">
@@ -20,7 +21,7 @@
 <body>
     <main class="login-main">
         <div class="login">
-            <div style="margin: 40px; margin-bottom: 15px;"><a href="#"><img src="logo&logotype.svg" alt=""></a></div>
+            <div style="margin: 40px; margin-bottom: 15px;"><a href="{% url 'main:home' %}"><img src="logo&logotype.svg" alt=""></a></div>
             <div class="login-box text-center shadow">
                 <p class="fs-5 font-bold mb-0">the activation link has been sent to your email address. It can be found in the spam section.</p>
             </div>

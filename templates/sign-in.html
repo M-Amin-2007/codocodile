@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
-    <link rel="icon" type="image/x-icon" href="./logo&logotype.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo&logotype.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap" rel="stylesheet">
@@ -18,11 +19,29 @@
 </head>
 
 <body>
+    <style>
+        body {
+            height: 100%;
+            margin: 0;
+            scroll-behavior: smooth;
+            background: url("{% static './img/body-background.png' %}") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+
+        .home-body {
+            background: url("{% static './img/body-home-background.png' %}") no-repeat center center fixed;
+            display: grid;
+            grid-template-columns: 1fr 4fr;
+        }
+    </style>
     <main class="login-main">
         <div class="login">
-            <div style="margin: 40px; margin-bottom: 15px;"><a href="#"><img src="logo&logotype.svg" alt=""></a></div>
+            <div style="margin: 40px; margin-bottom: 15px;"><a href="{% url 'main:home' %}"><img src="logo&logotype.svg" alt=""></a></div>
             <div class="login-box shadow">
-                <form action="{% url "users:signin" %}" method="post" class="needs-validation" id="theForm">
+                <form action="{% url 'users:signin' %}" method="post" class="needs-validation" id="theForm">
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control shadow" id="floatingInput" name="email" required>
                         <label for="floatingInput">Email address</label>
@@ -33,6 +52,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Sign In</button>
                 </form>
+                <a class="btn btn-primary mt-3">Sign Up</a>
             </div>
         </div>
     </main>

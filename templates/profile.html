@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <link rel="icon" type="image/x-icon" href="./logo&logotype.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo&logotype.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -23,6 +24,23 @@
 
 <body class="home-body">
     <style>
+        body {
+            height: 100%;
+            margin: 0;
+            scroll-behavior: smooth;
+            background: url("{% static './img/body-background.png' %}") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+
+        .home-body {
+            background: url("{% static './img/body-home-background.png' %}") no-repeat center center fixed;
+            display: grid;
+            grid-template-columns: 1fr 4fr;
+        }
+
         /* width */
         ::-webkit-scrollbar {
             width: 5px;
@@ -45,21 +63,21 @@
         }
     </style>
     <nav class="home-sidebar mx-auto content-center">
-        <div style="margin-bottom: 20px;"><img src="logo&logotype.svg" alt=""></div>
+        <div style="margin-bottom: 20px;"><img src="logo&logotype.svg"></div>
         <div class="center">
-            <a href="#" class="d-flex nav-button my-1 mx-auto">
+            <a href="{% url 'main:home' %}" class="d-flex nav-button my-1 mx-auto">
                 <i class="fa fa-home fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Home</p>
             </a>
         </div>
         <div class="center">
-            <a href="#" class="nav-button my-1 mx-auto">
+            <a href="{% url 'main:create_post' %}" class="nav-button my-1 mx-auto">
                 <i class="fa fa-plus-circle fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Create</p>
             </a>
         </div>
         <div class="center">
-            <a href="#" class="nav-button my-1 mx-auto hoverable">
+            <a href="{% url 'users:user' %}" class="nav-button my-1 mx-auto hoverable">
                 <i class="fa fa-user-circle fa-lg my-auto ml-auto p-2"></i>
                 <p class="my-auto mr-auto p-1">Profile</p>
             </a>
@@ -72,39 +90,42 @@
                 <div class="col-sm text-align">
                     <div class="login" style="padding-top: 50px; padding-bottom: 50px">
                         <div class="login-box shadow">
-                            <form action="" method="post">
+                            <form action="{% url 'users:user' %}" method="post">
                                 <div class="center">
                                     <div type="file" class="user-score d-flex shadow">
-                                        <h1 class="mx-auto my-auto h1">4.5<span
-                                                style="font-size: 25px; margin-left: 2px;">35</span>
+                                        <h1 class="mx-auto my-auto h1">{{ score1 }}<span
+                                                style="font-size: 25px; margin-left: 2px;">{{ score2 }}</span>
                                         </h1>
                                     </div>
                                 </div>
                                 <div style="margin-top: 20px;"></div>
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control shadow" id="floatingInput"
-                                        value="Mohammad Hossein Khademi" disabled>
+                                        value="{{ name }}" disabled>
                                     <label for="floatingInput">Name</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control shadow" id="floatingInput" value="@mhkhademi"
+                                    <input type="text" class="form-control shadow" id="floatingInput" value="@{{ username }}"
                                         disabled>
                                     <label for="floatingInput">Username</label>
                                 </div>
                                 <div class="form-floating mb-3">
                                     <input type="email" class="form-control shadow" id="floatingInput"
-                                        value="mohammadho_1387@yahoo.com" disabled>
+                                        value="{{ email }}" disabled>
                                     <label for="floatingInput">Email</label>
                                 </div>
                             </form>
-                            <a type="button" class="btn btn-primary fs-5 mb-3 shadow">
+                            <a href="{{ users:change_username }}" class="btn btn-primary fs-5 mb-3 shadow">
                                 Change Username
                             </a>
-                            <a type="button" class="btn btn-success fs-5 mb-3 shadow">
+                            <a href="{{ users:change_email }}" class="btn btn-success fs-5 mb-3 shadow">
                                 Change Email
                             </a>
-                            <a type="button" class="btn btn-warning fs-5 shadow">
+                            <a href="{{ users:change_password }}" class="btn btn-warning fs-5 shadow">
                                 Change Password
+                            </a>
+                            <a href="{{ users:signout }}" class="btn btn-warning fs-5 shadow">
+                                Sign Out
                             </a>
                         </div>
                     </div>
