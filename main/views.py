@@ -6,6 +6,9 @@ from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render
 from users.models import MyUser
 from main.models import *
+from django.core.paginator import Paginator
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 
 
@@ -27,8 +30,8 @@ from main.models import *
 @csrf_exempt
 def home(request):
     """  This function shows home  """
-    
-    return render(request, "index.html")
+    allposts = Post.objects.all().order_by('-id')
+    return render(request, 'index.html', {'posts':allposts})
 
 
 @csrf_exempt
@@ -67,7 +70,7 @@ def post_info(request):
                 "avg_rate": post.avg_rate,
                 "user_rate": user_rate}
         context_list.append(context)
-    return JsonResponse({"context": json.dumps(context_list), "length": len(context_list)})
+    return JsonResponse({"context": json.dumps(context_list)})
 
 @csrf_exempt
 def rate_post(request):

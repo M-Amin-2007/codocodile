@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password</title>
+    <title>Activate Email</title>
     <link rel="icon" type="image/x-icon" href="{% static 'img/logo&logotype.ico' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,19 +21,12 @@
 <body>
     <main class="login-main">
         <div class="login">
-            <div style="margin: 40px; margin-bottom: 15px;"><a href="{% url 'main:home' %}"><img src="logo&logotype.svg" alt=""></a></div>
-            <div class="login-box shadow">
-                <form action="{% url 'users:forgot_password' %}" method="post" class="needs-validation" id="theForm">
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control shadow" id="floatingEmail" name="email" required>
-                        <label for="floatingEmail">Email</label>
-                    </div>
-                    <button onclick="validateForm()" type="submit" class="btn btn-primary">Send Email</button>
-                </form>
+            <div style="margin: 40px; margin-bottom: 15px;"><a href="{% url 'main:home' %}"><img src="logo&logotype.svg"></a></div>
+            <div class="login-box text-center shadow">
+                <p class="fs-5 font-bold mb-0">the link has been expired or invalid.</p>
             </div>
         </div>
     </main>
-    <script src="form-validation.js"></script>
 </body>
 
 </html>
