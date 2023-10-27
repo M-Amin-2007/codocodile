@@ -94,3 +94,21 @@ def del_post(request):
     post_id = request.POST.get("post_id")
     Post.objects.get(id=post_id).delete()
     return JsonResponse({"message": "post deleted"})     
+
+@csrf_exempt
+def user_posts(request):
+    username = request.POST.get("username")
+    try:
+        mu = MyUser.objects.get(username=username)
+    except MyUser.DoesNotExist:
+        return JsonResponse({"message": "user not exist !!"})
+    posts = Post.objects.filter(user=mu)
+    context_list = list()
+    for post in posts:
+        context = {
+            "caption": post.caption,
+            "media": post.media_link,
+            "avg_rate": post.avg_rate
+        }
+        context_list.append(context)
+    return JsonResponse({"context_list": json.dumps(context_list)})

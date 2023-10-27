@@ -9,4 +9,5 @@ urlpatterns = [
     path("post/rate/", views.rate_post, name="rate_post"),
     path("post/info/", views.post_info, name="post_info"),
     path("post/del/", views.del_post, name="del_post"),
+    path("post/user/", views.user_posts, name="user_posts"),
 ]
