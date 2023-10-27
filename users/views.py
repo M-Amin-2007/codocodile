@@ -101,7 +101,7 @@ def signup(request):
     print(request.method)
     if request.user.is_authenticated and not request.user.is_superuser:
         return JsonResponse({"message": "user was logged in !!"}) 
-    elif request.POST:
+    elif request.method == "POST":
         username = request.POST["username"]
         if not MyUser.objects.filter(username=username):
             prefix = "https://" if request.is_secure() else "http://"
