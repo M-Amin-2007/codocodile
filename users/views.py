@@ -92,10 +92,10 @@ def signin(request):
         return JsonResponse({"message": f"this username does't exist !! username = {post_data}"})
 
     this_user = authenticate(username=username, password=password)
-    if this_user:
+    if this_user is not None:
         login(request, this_user)
         return JsonResponse({"message": "user logged in !!"})
-    context = {"message": f"password is incorrect !! user:{this_user.username}"}
+    context = {"message": f"password is incorrect !! user:{str(this_user.username)}"}
     return JsonResponse(context) 
 
 
