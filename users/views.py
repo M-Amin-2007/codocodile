@@ -96,7 +96,7 @@ def signin(request):
         login(request, this_user)
         return JsonResponse({"message": "user logged in !!"})
     context = {"message": f"password is incorrect !!"}
-    return JsonResponse(context) 
+    return JsonResponse(context)
 
 
 @csrf_exempt

@@ -121,9 +121,12 @@ def user_posts(request):
     context_list = list()
     for post in posts:
         context = {
-            "caption": post.caption,
-            "media": post.media_link,
-            "avg_rate": post.avg_rate
+            "id":id,
+                "caption": post.caption,
+                "media_link": post.media_link,
+                "username": post.user.username,
+                "email": post.user.email,
+                "avg_rate": post.avg_rate,
         }
         context_list.append(context)
     return JsonResponse({"context_list": json.dumps(context_list)})
