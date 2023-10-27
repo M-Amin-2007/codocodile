@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="icon" type="image/x-icon" href="./logo&logotype.ico">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</head>
+
+<body class="home-body">
+    <style>
+        /* width */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            border-radius: 10px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: rgb(169, 169, 169);
+            border-radius: 10px;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #000000;
+        }
+    </style>
+    <nav class="home-sidebar mx-auto content-center">
+        <div style="margin-bottom: 20px;"><img src="logo&logotype.svg" alt=""></div>
+        <div class="center">
+            <a href="#" class="d-flex nav-button my-1 mx-auto">
+                <i class="fa fa-home fa-lg my-auto ml-auto p-2"></i>
+                <p class="my-auto mr-auto p-1">Home</p>
+            </a>
+        </div>
+        <div class="center">
+            <a href="#" class="nav-button my-1 mx-auto">
+                <i class="fa fa-plus-circle fa-lg my-auto ml-auto p-2"></i>
+                <p class="my-auto mr-auto p-1">Create</p>
+            </a>
+        </div>
+        <div class="center">
+            <a href="#" class="nav-button my-1 mx-auto hoverable">
+                <i class="fa fa-user-circle fa-lg my-auto ml-auto p-2"></i>
+                <p class="my-auto mr-auto p-1">Profile</p>
+            </a>
+        </div>
+    </nav>
+    <main class="main">
+        <div class="mx-5 my-5">
+            <div class="row">
+                <div class="col-sm"></div>
+                <div class="col-sm text-align">
+                    <div class="login" style="padding-top: 50px; padding-bottom: 50px">
+                        <div class="login-box shadow">
+                            <form action="" method="post">
+                                <div class="center">
+                                    <div type="file" class="user-score d-flex shadow">
+                                        <h1 class="mx-auto my-auto h1">4.5<span
+                                                style="font-size: 25px; margin-left: 2px;">35</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 20px;"></div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control shadow" id="floatingInput"
+                                        value="Mohammad Hossein Khademi" disabled>
+                                    <label for="floatingInput">Name</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control shadow" id="floatingInput" value="@mhkhademi"
+                                        disabled>
+                                    <label for="floatingInput">Username</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control shadow" id="floatingInput"
+                                        value="mohammadho_1387@yahoo.com" disabled>
+                                    <label for="floatingInput">Email</label>
+                                </div>
+                            </form>
+                            <a type="button" class="btn btn-primary fs-5 mb-3 shadow">
+                                Change Username
+                            </a>
+                            <a type="button" class="btn btn-success fs-5 mb-3 shadow">
+                                Change Email
+                            </a>
+                            <a type="button" class="btn btn-warning fs-5 shadow">
+                                Change Password
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm"></div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,208 @@
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: black;
+}
+
+main {
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+
+body {
+
+  height: 100%;
+  margin: 0;
+  scroll-behavior: smooth;
+  background: url(body-background.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.home-body {
+  background: url(body-home-background.png) no-repeat center center fixed;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+}
+
+.home-sidebar {
+  margin: 25px;
+
+}
+
+html {
+  height: 100%;
+}
+
+.login-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.login-box {
+  padding: 20px;
+  width: 375px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.user-score {
+  height: 171px;
+  width: 171px;
+  background-color: #aaafe0be;
+  backdrop-filter: blur(5px);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type=text],
+input[type=password],
+input[type=email] {
+  border-radius: 25px !important;
+  background-color: #bbbbbb00;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus {
+  background-color: #bbbbbb00;
+}
+
+label::after {
+  background-color: #bbbbbb00 !important;
+}
+
+.btn {
+  border-radius: 25px !important;
+  width: 100%;
+  padding: 10px !important;
+}
+
+.nav-button {
+  transition-duration: 0.7s;
+  width: 130px;
+  font-size: larger;
+  text-align: center;
+  display: flex;
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(15px);
+  padding: 10px;
+  text-decoration: none !important;
+  color: black;
+  margin-left: 30px;
+  box-shadow: 0 0 10px #2a2a2a;
+}
+
+
+
+.main {
+  border-radius: 25px;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(15px);
+  margin: 10px;
+  margin-bottom: 0;
+  box-shadow: 0 0 10px #2a2a2a;
+}
+
+@media screen and (max-width: 992px) {}
+
+.card {
+  border-radius: 25px !important;
+}
+
+.card-img-top {
+  border-top-right-radius: 25px !important;
+  border-top-left-radius: 25px !important;
+}
+
+
+.rate {
+  float: left;
+}
+
+.avg-rate {
+  float: left;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.rate:not(:checked)>input {
+  position: absolute;
+  top: -9999px;
+}
+
+.rate:not(:checked)>label {
+  float: right;
+  width: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 30px;
+  color: #ccc;
+}
+
+.rate:not(:checked)>label:before {
+  content: '★ ';
+}
+
+.rate>input:checked~label {
+  transition-duration: 0.7s;
+  color: #ffc700;
+}
+
+.rate:not(:checked)>label:hover,
+.rate:not(:checked)>label:hover~label {
+  transition-duration: 0.7s;
+  color: #deb217;
+}
+
+.rate>input:checked+label:hover,
+.rate>input:checked+label:hover~label,
+.rate>input:checked~label:hover,
+.rate>input:checked~label:hover~label,
+.rate>label:hover~input:checked~label {
+  transition-duration: 0.7s;
+  color: #c59b08;
+}
+
+.author {
+  margin-left: 5px !important;
+}
+
+.card-body {
+  padding: 0px !important;
+}
+
+hr {
+  margin: 0px !important;
+}
+
+.modal-backdrop {
+  z-index: -1 !important;
+}
