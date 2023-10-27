@@ -77,7 +77,6 @@ def invalid_link(request):
 @csrf_exempt
 def user(request):
     """ This API returns user information """
-    
     if request.user.is_authenticated and not request.user.is_superuser:
         this_user = MyUser.objects.get(username=request.user.username)
         return render(request, "profile.html")
