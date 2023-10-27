@@ -217,14 +217,14 @@ def change_email(request):
     return redirect(reverse("users:signin"))
 
 
-@csrf_exempt
-def delete_account(request):
-    """ This function deletes teh user's account """
-    if request.user.is_authenticated and not request.user.is_superuser:
-        mu = MyUser.objects.get(username=request.user.username)
-        mu.delete()
-        return redirect(reverse("users:user"))
-    return redirect(reverse("users:signin"))
+# @csrf_exempt
+# def delete_account(request):
+#     """ This function deletes teh user's account """
+#     if request.user.is_authenticated and not request.user.is_superuser:
+#         mu = MyUser.objects.get(username=request.user.username)
+#         mu.delete()
+#         return redirect(reverse("users:user"))
+#     return redirect(reverse("users:signin"))
 
 
 # @csrf_exempt
