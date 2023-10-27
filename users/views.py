@@ -118,7 +118,7 @@ def signup(request):
             ActivationCodes.objects.create(username=username, code=code)
             MyUser.objects.create_user(username=username, password=post_data.get("password"),
                                         email=post_data.get("email"))
-            return JsonResponse(res)
+            return res
         return JsonResponse({"message":"username exists !!"})
     elif "code" in request.GET:
         username = request.GET.get("username")
