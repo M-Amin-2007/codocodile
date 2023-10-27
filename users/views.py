@@ -109,15 +109,15 @@ def signup(request):
             body = f"""
             {prefix}{request.get_host()}/user/signup?username={username}&code={code}
             """
-            send_gmail(body, request.POST["email"], "Rategram SignUp")
+            send_gmail(body, request.POST.get("email"), "Rategram SignUp")
             ActivationCodes.objects.create(username=username, code=code)
-            MyUser.objects.create_user(username=username, password=request.POST["password"],
-                                        email=request.POST["email"])
+            MyUser.objects.create_user(username=username, password=request.POST.get("password"),
+                                        email=request.POST.get("email"))
             return JsonResponse({"message":"email send !!"})
         return JsonResponse({"message":"username exists !!"})
     elif "code" in request.GET:
-        username = request.GET["username"]
-        code = request.GET["code"]
+        username = request.GET.get("username")
+        code = request.GET.get("code")
         activation_code = ActivationCodes.objects.filter(username=username, code=code)
         print(activation_code)
         if activation_code:
