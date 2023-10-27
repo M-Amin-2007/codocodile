@@ -25,10 +25,6 @@
             <div class="login-box shadow">
                 <form action="{% url 'users:signup' %}" method="post" class="needs-validation mb-3" id="theForm">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control shadow" id="floatingInput" name="name" required>
-                        <label for="floatingInput">Name</label>
-                    </div>
-                    <div class="form-floating mb-3">
                         <input type="text" class="form-control shadow" id="floatingInput" name="username" required>
                         <label for="floatingInput">Username</label>
                     </div>
@@ -42,9 +38,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary shadow">Sign Up</button>
                 </form>
-                <a type="button" class="btn btn-danger shadow">
-                    Forgot Password
-                </a>
+                
             </div>
         </div>
     </main>
