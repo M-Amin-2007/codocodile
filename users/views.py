@@ -59,8 +59,8 @@ def send_gmail(body, reciever, subject):
         try:
             server.sendmail(sender, reciever, em.as_string())
         except smtplib.SMTPRecipientsRefused:
-            return JsonResponse({"message": "invalid email"})
-    return JsonResponse({"message": "OK"})
+            return False
+    return True
     
 
 #--------------------------------   APIs   --------------------------------
@@ -80,12 +80,9 @@ def user(request):
     
     if request.user.is_authenticated and not request.user.is_superuser:
         this_user = MyUser.objects.get(username=request.user.username)
-        return JsonResponse({"username": this_user.username,
-                             "email": this_user.email,
-                             "score": this_user.score})
+        return render(request, "profile.html")
     else:
-        return redirect("signin")
-
+        return redirect(reverse("users:signin"))
 
 @csrf_exempt
 def signin(request):
@@ -110,28 +107,22 @@ def signin(request):
 @csrf_exempt
 def signup(request):
     """ This function register a new user """
-    print(request.method)
     if request.user.is_authenticated and not request.user.is_superuser:
-        return JsonResponse({"message": "user was logged in !!"}) 
+        return redirect(reverse("users:user"))
     elif request.method == "POST":
         username = request.POST.get("username")
-        print("----------------------------------------")
-        print(request.POST)
-        print(username)
-        print("----------------------------------salam", request.POST.get("email"))
         if not MyUser.objects.filter(username=username):
             prefix = "https://" if request.is_secure() else "http://"
             code = random_str(random.randint(20, 30))
             body = f"""
             {prefix}{request.get_host()}/user/signup?username={username}&code={code}
             """
-            print("-------***---------------------------salam", request.POST.get("email"))
             res = send_gmail(body, request.POST.get("email"), "Rategram SignUp")
             ActivationCodes.objects.create(username=username, code=code)
             MyUser.objects.create_user(username=username, password=request.POST.get("password"),
                                         email=request.POST.get("email"))
-            return JsonResponse(res)
-        return JsonResponse({"message":"username exists !!"})
+            return render(request, "activate.html")
+        return redirect(reverse("user:signup"))
     elif "code" in request.GET:
         username = request.GET.get("username")
         code = request.GET.get("code")
@@ -143,13 +134,10 @@ def signup(request):
             this_user.email_active = True
             this_user.save()
             login(request, this_user)
-            return JsonResponse({"message": "account activated !!"})
+            return redirect(reverse("users:user"))
         return JsonResponse({"message": "invalid or expired activation link !!"})
     else:
-        # show form
-        # need to complete
-        context = {"message": ""}
-        return JsonResponse(context)
+        return render(request, "sign-up.html")
 
 
 @csrf_exempt
@@ -157,78 +145,130 @@ def signout(request):
     """ This function signs out user """
     if request.user.is_authenticated and not request.user.is_superuser:
         logout(request)
-        return JsonResponse({"message": "user succesfully signed out !!"})
-    return redirect("signin")
+        return render(request, "index.html")
+    return redirect(reverse("users:signup"))
 
 
 @csrf_exempt
 def change_password(request):
     """ This function changes the user's password. this function is diferent from forgot password """
-    if request.method == "POST":
-        if request.user.is_authenticated and not request.user.is_superuser:
-            pass1 = request.POST.get("pass1")
-            new_pass = request.POST.get("pass2")
-            this_user = request.user
-            if authenticate(username=this_user.username, password=pass1) == this_user:
-                this_user.set_password(new_pass)
-                this_user.save()
-                login(request, this_user)
-                return redirect("user")
-            else:
-                return redirect("change_password")
-        else:
-            return redirect("signin")
-    return render(request, "changepass.html")
+    if request.GET:
+        return render(request, "changepass.html")
+    elif request.user.is_authenticated and not request.user.is_superuser:
+        pass1 = request.POST.get("pass1")
+        new_pass = request.POST.get("pass2")
+        this_user = request.user
+        if authenticate(username=this_user.username, password=pass1) == this_user:
+            this_user.set_password(new_pass)
+            this_user.save()
+            login(request, this_user)
+            return redirect(reverse("users:user"))
+        return redirect(reverse("users:change_password"))
+    return redirect(reverse("users:signin"))
 
 
 @csrf_exempt
 def change_username(request):
     """ This function changes the user's username """
-    if request.method == "POST":
-        if request.user.is_authenticated and not request.user.is_superuser:
-            new_username = request.POST.get("newusername")
-            this_user = request.user
-            if MyUser.objects.filter(username=new_username).exists():
-                return redirect("change_username")
-            this_user.username = new_username
-            this_user.save()
-            login(request, this_user)
-            return redirect("user")
-        else:
-            return redirect("signin")
-    return render(request, "changeusername.html")
+    if request.GET:
+        return render(request, "changeusername.html")
+    if request.user.is_authenticated and not request.user.is_superuser:
+        new_username = request.POST.get("new_username")
+        this_user = request.user
+        if MyUser.objects.filter(username=new_username).exists():
+            return redirect(reverse("users:change_username"))
+        this_user.username = new_username
+        this_user.save()
+        login(request, this_user)
+        return redirect(reverse("users:user"))
+    return redirect(reverse("users:signin"))
 
 
 @csrf_exempt
 def change_email(request):
     """ This function changes user's email """
-    if request.method == "POST":
-        if request.user.is_authenticated and not request.user.is_superuser:
-            if request.method == "GET":
-                if "code" in request.GET:
-                    code = request.GET.get("code")
-                    email = request.GET.get("email").lower()
-                    code_temp = ActivationCodes.objects.get(code=code)
-                    this_user = request.user
-                    if code_temp.username == this_user.username:
-                        this_user.email = email
-                        this_user.save()
-                        login(request, this_user)
-                        return redirect("user")
-                    return redirect("invalid_link")
-                return redirect("invalid_link")
-            new_email = request.POST.get("new_email").lower()
-            this_user = request.user
-            if MyUser.objects.filter(email=new_email).exists():
-                return redirect("change_email")
-            code = random_str(random.randint(20, 30))
-            prefix = "https://" if request.is_secure() else "http://"
-            body = f"""
-            click on this link to change your email to this email:
-            {prefix}{request.get_host()}/user/change_email/?email={new_email}&code={code}
-            """
-            send_gmail(body, new_email, "Rategram ChangeEmail")
-            ActivationCodes.objects.create(code=code, username=this_user.username)
-            return redirect("email_sent")
-        return redirect("signin")
-    return render(request, "changeemail.html")
+    if request.user.is_authenticated and not request.user.is_superuser:
+        if request.method == "GET":
+            if "code" in request.GET:
+                code = request.GET.get("code")
+                email = request.GET.get("email").lower()
+                code_temp = ActivationCodes.objects.get(code=code)
+                this_user = request.user
+                if code_temp.username == this_user.username:
+                    this_user.email = email
+                    this_user.save()
+                    login(request, this_user)
+                    return redirect(reverse("users:user"))
+                return JsonResponse({"message": "invalid or expired activation link !!"})
+            return render(request, "changeemail.html")
+        new_email = request.POST.get("new_email").lower()
+        this_user = request.user
+        if MyUser.objects.filter(email=new_email).exists():
+            return redirect(reverse("users:change_email"))
+        code = random_str(random.randint(20, 30))
+        prefix = "https://" if request.is_secure() else "http://"
+        body = f"""
+        click on this link to change your email to this email:
+        {prefix}{request.get_host()}/user/change_email/?email={new_email}&code={code}
+        """
+        send_gmail(body, new_email, "Rategram ChangeEmail")
+        ActivationCodes.objects.create(code=code, username=this_user.username)
+        return render(request, "activate.html")
+    return redirect(reverse("users:signin"))
+
+
+@csrf_exempt
+def delete_account(request):
+    """ This function deletes teh user's account """
+    if request.user.is_authenticated and not request.user.is_superuser:
+        mu = MyUser.objects.get(username=request.user.username)
+        mu.delete()
+        return redirect(reverse("users:user"))
+    return redirect(reverse("users:signin"))
+
+
+# @csrf_exempt
+# def forgot_password(request):
+#     """forgot pass word view"""
+    
+#     if "pass1" in request.POST.keys():
+#         this_user = request.user
+#         new_pass_repeat = request.POST.get("pass2")
+#         new_pass = request.POST.get("pass1")
+#         if new_pass != new_pass_repeat:
+#             return redirect(reverse("users:forgot_password"))
+#         this_user.set_password(new_pass)
+#         this_user.save()
+#         login(request, this_user)
+#         return redirect(reverse("users:user"))
+#     elif "username" in request.POST:
+#         username = request.POST.get("username")
+#         email = request.POST.get("email").lower()
+#         try:
+#             this_user = MyUser.objects.get(username=username)
+#         except MyUser.DoesNotExist:
+#             return redirect(reverse("users:forgot_password"))
+#         if re.sub(r"\s\w+@", "@", this_user.email) == email:
+#             code = random_str(random.randint(20,30))
+#             prefix = "https://" if request.is_secure() else "http://"
+#             body = f"""
+#             please click link to activate your account:
+#             {prefix}{request.get_host()}/user/forgot_password/?username={usename}&code={code}&email={email}
+#             """
+#             send_gmail(body, email, "Rategram ForgotPassword")
+#             ActivationCodes.objects.create(code=code, username=username)
+#             return render(request, )
+#         return JsonResponse({"message": "this email isn't for this user !!"})
+#     elif "code" in request.GET.keys():
+#         username = request.GET.get("username")
+#         code = request.GET.get("code")
+        
+#         try:
+#             ActivationCodes.objects.get(code=code)
+#         except ActivationCodes.DoesNotExist:
+#             return JsonResponse({"message": "forgot password link is not valid or expired !!"})
+#         this_user = MyUser.objects.get(username=username)
+#         login(request, this_user)
+#         context = {"change_password": True}
+#         return JsonResponse({"message": "load change password form."})
+#     return JsonResponse({"message": "form"})
