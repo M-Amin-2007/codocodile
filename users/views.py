@@ -95,7 +95,7 @@ def signin(request):
     if this_user is not None:
         login(request, this_user)
         return JsonResponse({"message": "user logged in !!"})
-    context = {"message": f"password is incorrect !! user:{str(this_user.username)}"}
+    context = {"message": f"password is incorrect !! user:"}
     return JsonResponse(context) 
 
 
