@@ -129,4 +129,8 @@ def user_posts(request):
                 "avg_rate": round(post.avg_rate, 2),
         }
         context_list.append(context)
-    return JsonResponse({"context_list": json.dumps(context_list)})
+    return JsonResponse({"context_list": json.dumps(context_list),
+                            "user_info": 
+                                {"username": mu.username,
+                            "email": mu.email,
+                            "score": round(mu.score, 4)}})
