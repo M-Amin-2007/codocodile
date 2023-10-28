@@ -60,6 +60,7 @@ def post_info(request):
                 "media_link": post.media_link,
                 "username": post.user.username,
                 "email": post.user.email,
+                "nor": post.nor,
                 "avg_rate": round(post.avg_rate, 2),
                 "user_rate": user_rate}
         context_list.append(context)
