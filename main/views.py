@@ -43,7 +43,7 @@ def post_info(request):
     mu = MyUser.objects.get(username=post_data.get("username"))
     no_all = Post.objects.all().count()
     context_list = list()
-    for id in range(no_all - post_range[1] + 1, no_all - post_range[0] + 2):
+    for id in range(post_range[1], post_range[0] + 1):
         try:
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
