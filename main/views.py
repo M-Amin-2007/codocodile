@@ -40,7 +40,10 @@ def post_info(request):
     """ This function returns the post information """
     post_data = json.loads(request.body.decode("utf-8"))
     post_range = post_data.get("post")
-    mu = MyUser.objects.get(username=post_data.get("username"))
+    try:
+        mu = MyUser.objects.get(username=post_data.get("username"))
+    except MyUser.DoesNotExist:
+        return JsonResponse({"message": "User does not exist!"})
     no_all = Post.objects.all().count()
     context_list = list()
     for id in range(post_range[0], post_range[1] + 1):
