@@ -31,7 +31,7 @@ def create_post(request):
     post_data = json.loads(request.body.decode("utf-8"))
     caption  = post_data.get("caption")
     media_link  = post_data.get("media_link")
-    user  = MyUser.objects.get(username=request.user.username)
+    user  = MyUser.objects.get(username=post_data.get("username"))
     Post.objects.create(caption=caption, media_link=media_link, user=user)
     return JsonResponse({"message": "Post succesfully created"})
 
