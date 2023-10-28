@@ -60,7 +60,7 @@ def post_info(request):
                 "media_link": post.media_link,
                 "username": post.user.username,
                 "email": post.user.email,
-                "avg_rate": post.avg_rate,
+                "avg_rate": round(post.avg_rate, 2),
                 "user_rate": user_rate}
         context_list.append(context)
     return JsonResponse({"context": json.dumps(context_list), "length": len(context_list)})
@@ -94,7 +94,7 @@ def rate_post(request):
     no_posts = len(Post.objects.filter(user=post.user))
     post.user.score = (post.user.score * no_posts - old_rate + post.avg_rate) / no_posts
     post.user.save()
-    return JsonResponse({"post_id": id, "new_post_rate": post.avg_rate})
+    return JsonResponse({"post_id": id, "new_post_rate": round(post.avg_rate, 2)})
 
 @csrf_exempt
 def del_post(request):
@@ -126,7 +126,7 @@ def user_posts(request):
                 "media_link": post.media_link,
                 "username": post.user.username,
                 "email": post.user.email,
-                "avg_rate": post.avg_rate,
+                "avg_rate": round(post.avg_rate, 2),
         }
         context_list.append(context)
     return JsonResponse({"context_list": json.dumps(context_list)})

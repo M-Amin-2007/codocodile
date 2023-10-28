@@ -74,7 +74,7 @@ def user(request):
         this_user = MyUser.objects.get(username=request.user.username)
         return JsonResponse({"username": this_user.username,
                              "email": this_user.email,
-                             "score": this_user.score})
+                             "score": round(this_user.score, 4)})
     else:
         return JsonResponse({"message": "user not authenticated !!"})
 
