@@ -52,7 +52,7 @@ def post_info(request):
             user_rate = post.avg_rate
         else:
             try:
-                user_rate = Rate.objects.get(post=post, username=mu).rate
+                user_rate = Rate.objects.get(post=post, user=mu).rate
             except Rate.DoesNotExist:
                 user_rate = 0
         context = {"id":id,
