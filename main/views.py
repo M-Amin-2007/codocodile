@@ -40,6 +40,7 @@ def post_info(request):
     """ This function returns the post information """
     post_data = json.loads(request.body.decode("utf-8"))
     post_range = json.loads(post_data.get("post"))
+    mu = MyUser.objects.get(username=post_data.get("username"))
     no_all = Post.objects.all().count()
     context_list = list()
     for id in range(no_all - post_range[1] + 1, no_all - post_range[0] + 2):
@@ -47,7 +48,6 @@ def post_info(request):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             continue
-        mu = MyUser.objects.get(username=request.user.username)
         if post.user is mu:
             user_rate = post.avg_rate
         else:
@@ -71,7 +71,7 @@ def rate_post(request):
     post_data = json.loads(request.body.decode("utf-8"))
     id = post_data.get("id")
     rate = post_data.get("rate")
-    mu = MyUser.objects.get(username=request.user.username)
+    mu = MyUser.objects.get(username=post_data.get("username"))
     try:
         post = Post.objects.get(id=id)
     except Post.DoesNotExist:
