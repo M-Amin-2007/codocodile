@@ -39,7 +39,7 @@ def create_post(request):
 def post_info(request):
     """ This function returns the post information """
     post_data = json.loads(request.body.decode("utf-8"))
-    post_range = json.loads(post_data.get("post"))
+    post_range = post_data.get("post")
     mu = MyUser.objects.get(username=post_data.get("username"))
     no_all = Post.objects.all().count()
     context_list = list()
